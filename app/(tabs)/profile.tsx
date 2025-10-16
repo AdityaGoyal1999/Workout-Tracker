@@ -1,7 +1,10 @@
+import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
+
+  const router = useRouter();
   const profileData = {
     name: "John Doe",
     email: "john.doe@example.com",
@@ -60,7 +63,11 @@ export default function ProfileScreen() {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={() => { 
+            // TODO: Change this to the actual logout logic
+            router.replace("/auth");
+        }}
+        >
         <Text style={styles.logoutText}>Sign Out</Text>
       </TouchableOpacity>
       </ScrollView>
