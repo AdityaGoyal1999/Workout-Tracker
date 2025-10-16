@@ -79,10 +79,21 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "#FFFFFF",
     paddingBottom: 20,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   profileSection: {
     alignItems: "center",
     padding: 20,
+    marginHorizontal: 10,
   },
   avatar: {
     width: 80,
