@@ -1,8 +1,11 @@
 
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function HomeScreen() {
+  const { theme } = useTheme();
+  
   const todayWorkout = {
     name: "Push Day",
     exercises: ["Bench Press", "Overhead Press", "Dips", "Tricep Extensions"],
