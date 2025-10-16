@@ -82,6 +82,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#007AFF",
     padding: 20,
     paddingTop: 40,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   greeting: {
     fontSize: 28,
