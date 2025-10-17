@@ -12,8 +12,10 @@ import {
     View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function AuthScreen() {
+  const { theme } = useTheme();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,6 +71,152 @@ export default function AuthScreen() {
     setName("");
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    keyboardView: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      paddingHorizontal: theme.spacing.xl,
+    },
+    header: {
+      alignItems: "center",
+      marginTop: theme.spacing['4xl'],
+      marginBottom: theme.spacing['4xl'],
+    },
+    logoContainer: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: theme.colors.surface,
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: theme.spacing.xl,
+      ...theme.shadows.md,
+    },
+    title: {
+      fontSize: theme.typography.fontSize['3xl'],
+      fontWeight: 'bold' as const,
+      color: theme.colors.text.primary,
+      marginBottom: theme.spacing.sm,
+      textAlign: "center",
+    },
+    subtitle: {
+      fontSize: theme.typography.fontSize.base,
+      color: theme.colors.text.secondary,
+      textAlign: "center",
+      lineHeight: theme.typography.lineHeight.normal,
+    },
+    form: {
+      flex: 1,
+    },
+    inputContainer: {
+      marginBottom: theme.spacing.xl,
+    },
+    label: {
+      fontSize: theme.typography.fontSize.base,
+      fontWeight: '600' as const,
+      color: theme.colors.text.primary,
+      marginBottom: theme.spacing.sm,
+    },
+    inputWrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.borderRadius.md,
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.lg,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    input: {
+      flex: 1,
+      fontSize: theme.typography.fontSize.base,
+      color: theme.colors.text.primary,
+      marginLeft: theme.spacing.md,
+    },
+    eyeIcon: {
+      padding: theme.spacing.xs,
+    },
+    authButton: {
+      backgroundColor: theme.colors.primary,
+      paddingVertical: theme.spacing.lg,
+      borderRadius: theme.borderRadius.md,
+      alignItems: "center",
+      marginTop: theme.spacing.md,
+      marginBottom: theme.spacing.xl,
+    },
+    authButtonDisabled: {
+      backgroundColor: theme.colors.text.tertiary,
+    },
+    authButtonText: {
+      fontSize: theme.typography.fontSize.base,
+      fontWeight: '600' as const,
+      color: theme.colors.white,
+    },
+    forgotPassword: {
+      alignItems: "center",
+      marginBottom: theme.spacing['3xl'],
+    },
+    forgotPasswordText: {
+      fontSize: theme.typography.fontSize.base,
+      color: theme.colors.primary,
+      fontWeight: '500' as const,
+    },
+    divider: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: theme.spacing.xl,
+    },
+    dividerLine: {
+      flex: 1,
+      height: 1,
+      backgroundColor: theme.colors.border,
+    },
+    dividerText: {
+      fontSize: theme.typography.fontSize.sm,
+      color: theme.colors.text.secondary,
+      marginHorizontal: theme.spacing.lg,
+    },
+    socialButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.colors.surface,
+      paddingVertical: theme.spacing.lg,
+      borderRadius: theme.borderRadius.md,
+      marginBottom: theme.spacing.md,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    socialButtonText: {
+      fontSize: theme.typography.fontSize.base,
+      fontWeight: '500' as const,
+      color: theme.colors.text.primary,
+      marginLeft: theme.spacing.md,
+    },
+    footer: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: theme.spacing.xl,
+      marginBottom: theme.spacing['4xl'],
+    },
+    footerText: {
+      fontSize: theme.typography.fontSize.base,
+      color: theme.colors.text.secondary,
+    },
+    footerLink: {
+      fontSize: theme.typography.fontSize.base,
+      color: theme.colors.primary,
+      fontWeight: '600' as const,
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <KeyboardAvoidingView
@@ -81,7 +229,7 @@ export default function AuthScreen() {
         >
           <View style={styles.header}>
             <View style={styles.logoContainer}>
-              <Ionicons name="fitness" size={60} color="#007AFF" />
+              <Ionicons name="fitness" size={60} color={theme.colors.primary} />
             </View>
             <Text style={styles.title}>
               {isLogin ? "Welcome Back" : "Create Account"}
@@ -98,10 +246,11 @@ export default function AuthScreen() {
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>Full Name</Text>
                 <View style={styles.inputWrapper}>
-                  <Ionicons name="person-outline" size={20} color="#8E8E93" />
+                  <Ionicons name="person-outline" size={20} color={theme.colors.text.secondary} />
                   <TextInput
                     style={styles.input}
                     placeholder="Enter your full name"
+                    placeholderTextColor={theme.colors.text.tertiary}
                     value={name}
                     onChangeText={setName}
                     autoCapitalize="words"
@@ -114,10 +263,11 @@ export default function AuthScreen() {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Email</Text>
               <View style={styles.inputWrapper}>
-                <Ionicons name="mail-outline" size={20} color="#8E8E93" />
+                <Ionicons name="mail-outline" size={20} color={theme.colors.text.secondary} />
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your email"
+                  placeholderTextColor={theme.colors.text.tertiary}
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
@@ -130,10 +280,11 @@ export default function AuthScreen() {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Password</Text>
               <View style={styles.inputWrapper}>
-                <Ionicons name="lock-closed-outline" size={20} color="#8E8E93" />
+                <Ionicons name="lock-closed-outline" size={20} color={theme.colors.text.secondary} />
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your password"
+                  placeholderTextColor={theme.colors.text.tertiary}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
@@ -147,7 +298,7 @@ export default function AuthScreen() {
                   <Ionicons
                     name={showPassword ? "eye-outline" : "eye-off-outline"}
                     size={20}
-                    color="#8E8E93"
+                    color={theme.colors.text.secondary}
                   />
                 </TouchableOpacity>
               </View>
@@ -157,10 +308,11 @@ export default function AuthScreen() {
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>Confirm Password</Text>
                 <View style={styles.inputWrapper}>
-                  <Ionicons name="lock-closed-outline" size={20} color="#8E8E93" />
+                  <Ionicons name="lock-closed-outline" size={20} color={theme.colors.text.secondary} />
                   <TextInput
                     style={styles.input}
                     placeholder="Confirm your password"
+                    placeholderTextColor={theme.colors.text.tertiary}
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
                     secureTextEntry={!showPassword}
@@ -194,14 +346,14 @@ export default function AuthScreen() {
             </View>
 
             <TouchableOpacity style={styles.socialButton}>
-              <Ionicons name="logo-google" size={20} color="#DB4437" />
+              <Ionicons name="logo-google" size={20} color={theme.colors.error} />
               <Text style={styles.socialButtonText}>
                 Continue with Google
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.socialButton}>
-              <Ionicons name="logo-apple" size={20} color="#000000" />
+              <Ionicons name="logo-apple" size={20} color={theme.colors.text.primary} />
               <Text style={styles.socialButtonText}>
                 Continue with Apple
               </Text>
@@ -224,155 +376,3 @@ export default function AuthScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F2F2F7",
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: 20,
-  },
-  header: {
-    alignItems: "center",
-    marginTop: 40,
-    marginBottom: 40,
-  },
-  logoContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#000000",
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#8E8E93",
-    textAlign: "center",
-    lineHeight: 22,
-  },
-  form: {
-    flex: 1,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000000",
-    marginBottom: 8,
-  },
-  inputWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderWidth: 1,
-    borderColor: "#E5E5EA",
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: "#000000",
-    marginLeft: 12,
-  },
-  eyeIcon: {
-    padding: 4,
-  },
-  authButton: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  authButtonDisabled: {
-    backgroundColor: "#C7C7CC",
-  },
-  authButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#FFFFFF",
-  },
-  forgotPassword: {
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  forgotPasswordText: {
-    fontSize: 16,
-    color: "#007AFF",
-    fontWeight: "500",
-  },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#E5E5EA",
-  },
-  dividerText: {
-    fontSize: 14,
-    color: "#8E8E93",
-    marginHorizontal: 16,
-  },
-  socialButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#E5E5EA",
-  },
-  socialButtonText: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#000000",
-    marginLeft: 12,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  footerText: {
-    fontSize: 16,
-    color: "#8E8E93",
-  },
-  footerLink: {
-    fontSize: 16,
-    color: "#007AFF",
-    fontWeight: "600",
-  },
-});

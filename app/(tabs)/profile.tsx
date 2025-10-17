@@ -1,9 +1,10 @@
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function ProfileScreen() {
-
+  const { theme } = useTheme();
   const router = useRouter();
   const profileData = {
     name: "John Doe",
@@ -21,189 +22,167 @@ export default function ProfileScreen() {
     { title: "About", icon: "information-circle-outline" },
   ];
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    header: {
+      backgroundColor: theme.colors.surface,
+      paddingBottom: theme.spacing.xl,
+      marginHorizontal: theme.spacing.md,
+      borderRadius: theme.borderRadius.md,
+      ...theme.shadows.sm,
+    },
+    profileSection: {
+      alignItems: "center",
+      padding: theme.spacing.xl,
+    },
+    avatar: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      backgroundColor: theme.colors.primary,
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: theme.spacing.lg,
+    },
+    avatarText: {
+      fontSize: theme.typography.fontSize['4xl'],
+      fontWeight: 'bold' as const,
+      color: theme.colors.white,
+    },
+    name: {
+      fontSize: theme.typography.fontSize['2xl'],
+      fontWeight: 'bold' as const,
+      color: theme.colors.text.primary,
+      marginBottom: theme.spacing.xs,
+    },
+    email: {
+      fontSize: theme.typography.fontSize.base,
+      color: theme.colors.text.secondary,
+      marginBottom: theme.spacing.xs,
+    },
+    memberSince: {
+      fontSize: theme.typography.fontSize.sm,
+      color: theme.colors.text.secondary,
+    },
+    statsSection: {
+      flexDirection: "row",
+      backgroundColor: theme.colors.surface,
+      margin: theme.spacing.lg,
+      borderRadius: theme.borderRadius.md,
+      padding: theme.spacing.xl,
+      ...theme.shadows.sm,
+    },
+    statItem: {
+      flex: 1,
+      alignItems: "center",
+    },
+    statNumber: {
+      fontSize: theme.typography.fontSize.xl,
+      fontWeight: 'bold' as const,
+      color: theme.colors.primary,
+      marginBottom: theme.spacing.xs,
+    },
+    statLabel: {
+      fontSize: theme.typography.fontSize.xs,
+      color: theme.colors.text.secondary,
+    },
+    statDivider: {
+      width: 1,
+      backgroundColor: theme.colors.border,
+      marginHorizontal: theme.spacing.md,
+    },
+    menuSection: {
+      backgroundColor: theme.colors.surface,
+      margin: theme.spacing.lg,
+      borderRadius: theme.borderRadius.md,
+      ...theme.shadows.sm,
+    },
+    menuItem: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: theme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.borderLight,
+    },
+    menuTitle: {
+      fontSize: theme.typography.fontSize.base,
+      color: theme.colors.text.primary,
+    },
+    menuArrow: {
+      fontSize: theme.typography.fontSize.lg,
+      color: theme.colors.text.tertiary,
+    },
+    logoutButton: {
+      backgroundColor: theme.colors.error,
+      margin: theme.spacing.lg,
+      padding: theme.spacing.lg,
+      borderRadius: theme.borderRadius.md,
+      alignItems: "center",
+    },
+    logoutText: {
+      color: theme.colors.white,
+      fontSize: theme.typography.fontSize.base,
+      fontWeight: '600' as const,
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView style={styles.scrollView}>
-      <View style={styles.header}>
-        <View style={styles.profileSection}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {profileData.name.split(" ").map(n => n[0]).join("")}
-            </Text>
+        <View style={styles.header}>
+          <View style={styles.profileSection}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {profileData.name.split(" ").map(n => n[0]).join("")}
+              </Text>
+            </View>
+            <Text style={styles.name}>{profileData.name}</Text>
+            <Text style={styles.email}>{profileData.email}</Text>
+            <Text style={styles.memberSince}>Member since {profileData.memberSince}</Text>
           </View>
-          <Text style={styles.name}>{profileData.name}</Text>
-          <Text style={styles.email}>{profileData.email}</Text>
-          <Text style={styles.memberSince}>Member since {profileData.memberSince}</Text>
         </View>
-      </View>
 
-      <View style={styles.statsSection}>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>{profileData.totalWorkouts}</Text>
-          <Text style={styles.statLabel}>Workouts</Text>
+        <View style={styles.statsSection}>
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>{profileData.totalWorkouts}</Text>
+            <Text style={styles.statLabel}>Workouts</Text>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>18h 30m</Text>
+            <Text style={styles.statLabel}>Total Time</Text>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>5</Text>
+            <Text style={styles.statLabel}>PRs</Text>
+          </View>
         </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>18h 30m</Text>
-          <Text style={styles.statLabel}>Total Time</Text>
-        </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>5</Text>
-          <Text style={styles.statLabel}>PRs</Text>
-        </View>
-      </View>
 
-      <View style={styles.menuSection}>
-        {menuItems.map((item, index) => (
-          <TouchableOpacity key={index} style={styles.menuItem}>
-            <Text style={styles.menuTitle}>{item.title}</Text>
-            <Text style={styles.menuArrow}>›</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+        <View style={styles.menuSection}>
+          {menuItems.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.menuItem}>
+              <Text style={styles.menuTitle}>{item.title}</Text>
+              <Text style={styles.menuArrow}>›</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={() => { 
-            // TODO: Change this to the actual logout logic
-            router.replace("/auth");
-        }}
-        >
-        <Text style={styles.logoutText}>Sign Out</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.logoutButton} onPress={() => { 
+              // TODO: Change this to the actual logout logic
+              router.replace("/auth");
+          }}
+          >
+          <Text style={styles.logoutText}>Sign Out</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F2F2F7",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  header: {
-    backgroundColor: "#FFFFFF",
-    paddingBottom: 20,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  profileSection: {
-    alignItems: "center",
-    padding: 20,
-    marginHorizontal: 10,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#007AFF",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  avatarText: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#000000",
-    marginBottom: 5,
-  },
-  email: {
-    fontSize: 16,
-    color: "#8E8E93",
-    marginBottom: 5,
-  },
-  memberSince: {
-    fontSize: 14,
-    color: "#8E8E93",
-  },
-  statsSection: {
-    flexDirection: "row",
-    backgroundColor: "#FFFFFF",
-    margin: 15,
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#007AFF",
-    marginBottom: 5,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: "#8E8E93",
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: "#E5E5EA",
-    marginHorizontal: 10,
-  },
-  menuSection: {
-    backgroundColor: "#FFFFFF",
-    margin: 15,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  menuItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F2F2F7",
-  },
-  menuTitle: {
-    fontSize: 16,
-    color: "#000000",
-  },
-  menuArrow: {
-    fontSize: 18,
-    color: "#C7C7CC",
-  },
-  logoutButton: {
-    backgroundColor: "#FF3B30",
-    margin: 15,
-    padding: 15,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  logoutText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-});
