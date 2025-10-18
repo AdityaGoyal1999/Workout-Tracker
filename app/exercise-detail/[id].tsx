@@ -8,7 +8,7 @@ export default function ExerciseDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   
-  const exercise = exercisesData.find(ex => ex.id === parseInt(id as string));
+  const exercise = exercisesData.find(ex => ex.id === id);
 
   if (!exercise) {
     return (
@@ -26,16 +26,16 @@ export default function ExerciseDetailScreen() {
     );
   }
 
-  const getDifficultyStyle = (difficulty) => {
-    switch (difficulty) {
-      case "Beginner":
-        return { backgroundColor: "#34C759" };
-      case "Intermediate":
-        return { backgroundColor: "#FF9500" };
-      case "Advanced":
-        return { backgroundColor: "#FF3B30" };
+  const getDifficultyStyle = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case "beginner":
+        return { backgroundColor: "#10B981" };
+      case "intermediate":
+        return { backgroundColor: "#F59E0B" };
+      case "expert":
+        return { backgroundColor: "#EF4444" };
       default:
-        return { backgroundColor: "#8E8E93" };
+        return { backgroundColor: "#9CA3AF" };
     }
   };
 
@@ -56,17 +56,17 @@ export default function ExerciseDetailScreen() {
         <View style={styles.content}>
           <View style={styles.exerciseHeader}>
             <Text style={styles.exerciseName}>{exercise.name}</Text>
-            <View style={[styles.difficultyBadge, getDifficultyStyle(exercise.difficulty)]}>
-              <Text style={styles.difficultyText}>{exercise.difficulty}</Text>
+            <View style={[styles.difficultyBadge, getDifficultyStyle(exercise.level)]}>
+              <Text style={styles.difficultyText}>{exercise.level}</Text>
             </View>
           </View>
 
           <Text style={styles.exerciseCategory}>{exercise.category}</Text>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Muscle Groups</Text>
+            <Text style={styles.sectionTitle}>Primary Muscles</Text>
             <View style={styles.muscleGroups}>
-              {exercise.muscleGroups.map((muscle, index) => (
+              {exercise.primaryMuscles.map((muscle, index) => (
                 <View key={index} style={styles.muscleTag}>
                   <Text style={styles.muscleText}>{muscle}</Text>
                 </View>
@@ -74,14 +74,30 @@ export default function ExerciseDetailScreen() {
             </View>
           </View>
 
+          {exercise.secondaryMuscles.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Secondary Muscles</Text>
+              <View style={styles.muscleGroups}>
+                {exercise.secondaryMuscles.map((muscle, index) => (
+                  <View key={index} style={[styles.muscleTag, styles.secondaryMuscleTag]}>
+                    <Text style={styles.muscleText}>{muscle}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Equipment</Text>
             <Text style={styles.equipmentText}>{exercise.equipment}</Text>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Description</Text>
-            <Text style={styles.descriptionText}>{exercise.description}</Text>
+            <Text style={styles.sectionTitle}>Exercise Type</Text>
+            <View style={styles.exerciseInfo}>
+              <Text style={styles.infoText}>Force: {exercise.force}</Text>
+              <Text style={styles.infoText}>Mechanic: {exercise.mechanic || 'N/A'}</Text>
+            </View>
           </View>
 
           <View style={styles.section}>
@@ -96,15 +112,6 @@ export default function ExerciseDetailScreen() {
             ))}
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Tips</Text>
-            {exercise.tips.map((tip, index) => (
-              <View key={index} style={styles.tipItem}>
-                <Ionicons name="bulb" size={16} color="#FF9500" />
-                <Text style={styles.tipText}>{tip}</Text>
-              </View>
-            ))}
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -195,6 +202,19 @@ const styles = StyleSheet.create({
   muscleText: {
     fontSize: 14,
     color: "#1976D2",
+    fontWeight: "500",
+  },
+  secondaryMuscleTag: {
+    backgroundColor: "#F3F4F6",
+    opacity: 0.7,
+  },
+  exerciseInfo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  infoText: {
+    fontSize: 16,
+    color: "#8E8E93",
     fontWeight: "500",
   },
   equipmentText: {

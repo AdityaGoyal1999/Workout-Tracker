@@ -15,23 +15,28 @@ export default function ExercisesScreen() {
     >
       <View style={styles.exerciseHeader}>
         <Text style={styles.exerciseName}>{item.name}</Text>
-        <View style={[styles.difficultyBadge, getDifficultyStyle(item.difficulty)]}>
-          <Text style={styles.difficultyText}>{item.difficulty}</Text>
+        <View style={[styles.difficultyBadge, getDifficultyStyle(item.level)]}>
+          <Text style={styles.difficultyText}>{item.level}</Text>
         </View>
       </View>
       
       <Text style={styles.exerciseCategory}>{item.category}</Text>
       
       <View style={styles.muscleGroups}>
-        {item.muscleGroups.map((muscle: string, index: number) => (
+        {item.primaryMuscles.map((muscle: string, index: number) => (
           <View key={index} style={styles.muscleTag}>
+            <Text style={styles.muscleText}>{muscle}</Text>
+          </View>
+        ))}
+        {item.secondaryMuscles.map((muscle: string, index: number) => (
+          <View key={`secondary-${index}`} style={[styles.muscleTag, styles.secondaryMuscleTag]}>
             <Text style={styles.muscleText}>{muscle}</Text>
           </View>
         ))}
       </View>
       
       <Text style={styles.exerciseDescription} numberOfLines={2}>
-        {item.description}
+        {item.instructions[0] || 'No description available'}
       </Text>
       
       <View style={styles.exerciseFooter}>
@@ -41,13 +46,13 @@ export default function ExercisesScreen() {
     </TouchableOpacity>
   );
 
-  const getDifficultyStyle = (difficulty: string) => {
-    switch (difficulty) {
-      case "Beginner":
+  const getDifficultyStyle = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case "beginner":
         return { backgroundColor: theme.colors.success };
-      case "Intermediate":
+      case "intermediate":
         return { backgroundColor: theme.colors.warning };
-      case "Advanced":
+      case "expert":
         return { backgroundColor: theme.colors.error };
       default:
         return { backgroundColor: theme.colors.text.tertiary };
@@ -126,6 +131,10 @@ export default function ExercisesScreen() {
       marginRight: theme.spacing.xs,
       marginBottom: theme.spacing.xs,
     },
+    secondaryMuscleTag: {
+      backgroundColor: theme.colors.gray[200],
+      opacity: 0.7,
+    },
     muscleText: {
       fontSize: theme.typography.fontSize.xs,
       color: theme.colors.text.secondary,
@@ -167,6 +176,11 @@ export default function ExercisesScreen() {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={10} // limits the number of items in memory - efficiency optimization
+        removeClippedSubviews={true}
+        
       />
     </SafeAreaView>
   );
