@@ -1,10 +1,13 @@
 
+import CustomModal from "@/components/Modal";
+import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../contexts/ThemeContext";
 
 export default function HomeScreen() {
   const { theme } = useTheme();
+  const [modalVisible, setModalVisible] = useState(false);
   
   const todayWorkout = {
     name: "Push Day",
@@ -142,10 +145,10 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView style={styles.scrollView}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <Text style={styles.greeting}>Good morning!</Text>
           <Text style={styles.subtitle}>Ready for your workout?</Text>
-        </View>
+        </View> */}
 
         <View style={styles.todayWorkout}>
           <Text style={styles.sectionTitle}>Today's Workout</Text>
@@ -165,7 +168,16 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <View style={styles.statsSection}>
+        <View>
+          <TouchableOpacity 
+            style={styles.startButton}
+            onPress = {() => setModalVisible(true)}
+          >
+            <Text style={styles.startButtonText}>Instant Workout</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* <View style={styles.statsSection}>
           <Text style={styles.sectionTitle}>Quick Stats</Text>
           <View style={styles.statsGrid}>
             {quickStats.map((stat, index) => (
@@ -175,9 +187,9 @@ export default function HomeScreen() {
               </View>
             ))}
           </View>
-        </View>
+        </View> */}
 
-        <View style={styles.quickActions}>
+        {/* <View style={styles.quickActions}>
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.actionsGrid}>
             <TouchableOpacity style={styles.actionButton}>
@@ -187,8 +199,16 @@ export default function HomeScreen() {
               <Text style={styles.actionText}>View Progress</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
+
+      <CustomModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Instant Workout"
+      >
+        <Text>Hello custom modal</Text>
+      </CustomModal>
     </SafeAreaView>
   );
 }
