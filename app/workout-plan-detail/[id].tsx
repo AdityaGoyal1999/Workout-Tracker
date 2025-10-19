@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, FlatList, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import exercisesData from '../../assets/data/exercises.json';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useWorkout } from '../../contexts/WorkoutContext';
 
@@ -10,6 +11,12 @@ export default function WorkoutPlanDetailScreen() {
   const { workoutPlans, deleteDayFromPlan, addExerciseToDay, deleteExerciseFromDay } = useWorkout();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  
+  // State for exercise selection modal
+  const [showExerciseModal, setShowExerciseModal] = useState(false);
+  const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredExercises, setFilteredExercises] = useState(exercisesData);
 
   const plan = workoutPlans.find((p: any) => p.id === id);
 
@@ -40,16 +47,38 @@ export default function WorkoutPlanDetailScreen() {
   };
 
   const handleAddExercise = (dayId: string) => {
-    // For now, we'll add a placeholder exercise
-    // In a real app, you'd navigate to an exercise selection screen
-    const exerciseName = prompt('Enter exercise name:');
-    if (exerciseName) {
-      addExerciseToDay(plan.id, dayId, {
-        name: exerciseName,
+    setSelectedDayId(dayId);
+    setSearchQuery('');
+    setFilteredExercises(exercisesData);
+    setShowExerciseModal(true);
+  };
+
+  const handleSearchExercises = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim() === '') {
+      setFilteredExercises(exercisesData);
+    } else {
+      const filtered = exercisesData.filter((exercise: any) =>
+        exercise.name.toLowerCase().includes(query.toLowerCase()) ||
+        exercise.primaryMuscles.some((muscle: string) => 
+          muscle.toLowerCase().includes(query.toLowerCase())
+        )
+      );
+      setFilteredExercises(filtered);
+    }
+  };
+
+  const handleSelectExercise = (exercise: any) => {
+    if (selectedDayId) {
+      addExerciseToDay(plan.id, selectedDayId, {
+        name: exercise.name,
         sets: 3,
         reps: 10,
+        weight: 0,
       });
     }
+    setShowExerciseModal(false);
+    setSelectedDayId(null);
   };
 
   const handleDeleteExercise = (dayId: string, exerciseId: string, exerciseName: string) => {
@@ -208,6 +237,70 @@ export default function WorkoutPlanDetailScreen() {
       fontSize: theme.typography.fontSize.xs,
       fontWeight: '500' as const,
     },
+    // Modal styles
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.borderRadius.lg,
+      padding: theme.spacing.xl,
+      width: '90%',
+      maxHeight: '80%',
+      ...theme.shadows.lg,
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: theme.spacing.lg,
+    },
+    modalTitle: {
+      fontSize: theme.typography.fontSize.xl,
+      fontWeight: 'bold' as const,
+      color: theme.colors.text.primary,
+    },
+    closeButton: {
+      padding: theme.spacing.sm,
+    },
+    closeButtonText: {
+      fontSize: theme.typography.fontSize.lg,
+      color: theme.colors.primary,
+      fontWeight: 'bold' as const,
+    },
+    searchInput: {
+      backgroundColor: theme.colors.background,
+      borderRadius: theme.borderRadius.md,
+      padding: theme.spacing.md,
+      fontSize: theme.typography.fontSize.base,
+      color: theme.colors.text.primary,
+      marginBottom: theme.spacing.lg,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    modalExerciseItem: {
+      padding: theme.spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
+    },
+    modalExerciseName: {
+      fontSize: theme.typography.fontSize.base,
+      fontWeight: '500' as const,
+      color: theme.colors.text.primary,
+      marginBottom: theme.spacing.xs,
+    },
+    modalExerciseMuscles: {
+      fontSize: theme.typography.fontSize.sm,
+      color: theme.colors.text.secondary,
+    },
+    modalExerciseEquipment: {
+      fontSize: theme.typography.fontSize.xs,
+      color: theme.colors.text.secondary,
+      fontStyle: 'italic',
+    },
   });
 
   return (
@@ -303,6 +396,56 @@ export default function WorkoutPlanDetailScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Exercise Selection Modal */}
+      <Modal
+        visible={showExerciseModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowExerciseModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Exercise</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setShowExerciseModal(false)}
+              >
+                <Text style={styles.closeButtonText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search exercises..."
+              placeholderTextColor={theme.colors.text.secondary}
+              value={searchQuery}
+              onChangeText={handleSearchExercises}
+            />
+
+            <FlatList
+              data={filteredExercises}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalExerciseItem}
+                  onPress={() => handleSelectExercise(item)}
+                >
+                  <Text style={styles.modalExerciseName}>{item.name}</Text>
+                  <Text style={styles.modalExerciseMuscles}>
+                    {item.primaryMuscles.join(', ')}
+                  </Text>
+                  <Text style={styles.modalExerciseEquipment}>
+                    {item.equipment} • {item.level}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

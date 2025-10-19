@@ -6,8 +6,6 @@ import { WorkoutProvider } from "../contexts/WorkoutContext";
 export default function RootLayout() {
   return (
     <ThemeProvider>
-
-      {/* TODO: Dig into this */}
       <WorkoutProvider>
         <SafeAreaProvider>
           <Stack

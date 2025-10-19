@@ -14,12 +14,12 @@ export default function HomeScreen() {
   const todayWorkout = activePlan ? {
     name: activePlan.days[0]?.name || "No workout planned",
     exercises: activePlan.days[0]?.exercises.map(ex => ex.name) || [],
-    duration: "45 min",
+    // duration: "45 min",
     completed: false,
   } : {
     name: "No active plan",
     exercises: [],
-    duration: "0 min",
+    // duration: "0 min",
     completed: false,
   };
 
@@ -161,7 +161,7 @@ export default function HomeScreen() {
           <Text style={styles.sectionTitle}>Today's Workout</Text>
           <View style={styles.workoutCard}>
             <Text style={styles.workoutName}>{todayWorkout.name}</Text>
-            <Text style={styles.workoutDuration}>{todayWorkout.duration}</Text>
+            {/* <Text style={styles.workoutDuration}>{todayWorkout.duration}</Text> */}
             {activePlan && (
               <Text style={[styles.workoutDuration, { marginBottom: theme.spacing.sm }]}>
                 From: {activePlan.name}
