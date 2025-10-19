@@ -1,18 +1,25 @@
 
-import CustomModal from "@/components/Modal";
-import { useState } from "react";
+import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useWorkout } from "../../contexts/WorkoutContext";
 
 export default function HomeScreen() {
   const { theme } = useTheme();
-  const [modalVisible, setModalVisible] = useState(false);
+  const router = useRouter();
+  const { activePlan } = useWorkout();
   
-  const todayWorkout = {
-    name: "Push Day",
-    exercises: ["Bench Press", "Overhead Press", "Dips", "Tricep Extensions"],
+  // Get today's workout from active plan (simplified - in real app you'd determine which day it is)
+  const todayWorkout = activePlan ? {
+    name: activePlan.days[0]?.name || "No workout planned",
+    exercises: activePlan.days[0]?.exercises.map(ex => ex.name) || [],
     duration: "45 min",
+    completed: false,
+  } : {
+    name: "No active plan",
+    exercises: [],
+    duration: "0 min",
     completed: false,
   };
 
@@ -155,6 +162,11 @@ export default function HomeScreen() {
           <View style={styles.workoutCard}>
             <Text style={styles.workoutName}>{todayWorkout.name}</Text>
             <Text style={styles.workoutDuration}>{todayWorkout.duration}</Text>
+            {activePlan && (
+              <Text style={[styles.workoutDuration, { marginBottom: theme.spacing.sm }]}>
+                From: {activePlan.name}
+              </Text>
+            )}
             <View style={styles.exercisesList}>
               {todayWorkout.exercises.map((exercise, index) => (
                 <Text key={index} style={styles.exerciseItem}>• {exercise}</Text>
@@ -168,10 +180,16 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <View>
+        <View style={styles.quickActions}>
           <TouchableOpacity 
             style={styles.startButton}
-            onPress = {() => setModalVisible(true)}
+            onPress={() => router.push('/workout-plans')}
+          >
+            <Text style={styles.startButtonText}>Workout Plans</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.startButton, { backgroundColor: theme.colors.secondary, marginTop: theme.spacing.md }]}
           >
             <Text style={styles.startButtonText}>Instant Workout</Text>
           </TouchableOpacity>
@@ -201,14 +219,6 @@ export default function HomeScreen() {
           </View>
         </View> */}
       </ScrollView>
-
-      <CustomModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        title="Instant Workout"
-      >
-        <Text>Hello custom modal</Text>
-      </CustomModal>
     </SafeAreaView>
   );
 }
