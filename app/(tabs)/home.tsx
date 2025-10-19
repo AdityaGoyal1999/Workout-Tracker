@@ -13,7 +13,7 @@ export default function HomeScreen() {
   // Get today's workout from active plan (simplified - in real app you'd determine which day it is)
   const todayWorkout = activePlan ? {
     name: activePlan.days[0]?.name || "No workout planned",
-    exercises: activePlan.days[0]?.exercises.map(ex => ex.name) || [],
+    exercises: activePlan.days[0]?.exercises || [],
     // duration: "45 min",
     completed: false,
   } : {
@@ -169,10 +169,16 @@ export default function HomeScreen() {
             )}
             <View style={styles.exercisesList}>
               {todayWorkout.exercises.map((exercise, index) => (
-                <Text key={index} style={styles.exerciseItem}>• {exercise}</Text>
+                <Text key={index} style={styles.exerciseItem}>• {exercise.name}</Text>
               ))}
             </View>
-            <TouchableOpacity style={styles.startButton}>
+            <TouchableOpacity 
+              style={styles.startButton}
+              onPress={() => router.push({
+                pathname: '/workout-page',
+                params: { workoutData: JSON.stringify(todayWorkout) }
+              })}
+            >
               <Text style={styles.startButtonText}>
                 {todayWorkout.completed ? "Completed" : "Start Workout"}
               </Text>
